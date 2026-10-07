@@ -1,8 +1,18 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function MovieCard({ movie }) {
+  const navigate = useNavigate();
+
+  const openMovie = () => {
+    navigate(`/movie/${movie.title}`, {
+      state: movie,
+    });
+  };
+
   return (
     <div
+      onClick={openMovie}
       style={{
         border: "1px solid #ccc",
         borderRadius: "10px",
@@ -11,6 +21,7 @@ function MovieCard({ movie }) {
         width: "250px",
         display: "inline-block",
         verticalAlign: "top",
+        cursor: "pointer",
       }}
     >
       <img

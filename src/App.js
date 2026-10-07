@@ -1,62 +1,25 @@
 import React, { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MovieList from "./MovieList";
 import Filter from "./Filter";
+import MovieDetails from "./MovieDetails";
 
-function App() {
-  const [movies, setMovies] = useState([
-    {
-      title: "Avengers: Endgame",
-      description: "The Avengers fight to save the universe.",
-      posterURL:
-        "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
-      rating: 8.4,
-    },
-    {
-      title: "Black Panther",
-      description: "T'Challa becomes the king of Wakanda.",
-      posterURL:
-        "https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg",
-      rating: 7.3,
-    },
-  ]);
-
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [posterURL, setPosterURL] = useState("");
-  const [rating, setRating] = useState("");
-
-  const [searchTitle, setSearchTitle] = useState("");
-  const [searchRating, setSearchRating] = useState("");
-
-  const addMovie = (e) => {
-    e.preventDefault();
-
-    const newMovie = {
-      title: title,
-      description: description,
-      posterURL: posterURL,
-      rating: Number(rating),
-    };
-
-    setMovies([...movies, newMovie]);
-
-    setTitle("");
-    setDescription("");
-    setPosterURL("");
-    setRating("");
-  };
-
-  const filteredMovies = movies.filter((movie) => {
-    const matchesTitle = movie.title
-      .toLowerCase()
-      .includes(searchTitle.toLowerCase());
-
-    const matchesRating =
-      searchRating === "" || movie.rating >= Number(searchRating);
-
-    return matchesTitle && matchesRating;
-  });
-
+function Home({
+  movies,
+  searchTitle,
+  setSearchTitle,
+  searchRating,
+  setSearchRating,
+  title,
+  setTitle,
+  description,
+  setDescription,
+  posterURL,
+  setPosterURL,
+  rating,
+  setRating,
+  addMovie,
+}) {
   return (
     <div style={{ padding: "30px", textAlign: "center" }}>
       <h1>My Movie App</h1>
@@ -117,8 +80,97 @@ function App() {
         <button type="submit">Add Movie</button>
       </form>
 
-      <MovieList movies={filteredMovies} />
+      <MovieList movies={movies} />
     </div>
+  );
+}
+
+function App() {
+  const [movies, setMovies] = useState([
+    {
+      title: "Avengers: Endgame",
+      description: "The Avengers fight to save the universe.",
+      posterURL:
+        "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
+      rating: 8.4,
+      trailerURL: "https://www.youtube.com/embed/TcMBFSGVi1c",
+    },
+    {
+      title: "Black Panther",
+      description: "T'Challa becomes the king of Wakanda.",
+      posterURL:
+        "https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg",
+      rating: 7.3,
+      trailerURL: "https://www.youtube.com/embed/xjDjIWPwcPU",
+    },
+  ]);
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [posterURL, setPosterURL] = useState("");
+  const [rating, setRating] = useState("");
+
+  const [searchTitle, setSearchTitle] = useState("");
+  const [searchRating, setSearchRating] = useState("");
+
+  const addMovie = (e) => {
+    e.preventDefault();
+
+    const newMovie = {
+      title: title,
+      description: description,
+      posterURL: posterURL,
+      rating: Number(rating),
+      trailerURL: "",
+    };
+
+    setMovies([...movies, newMovie]);
+
+    setTitle("");
+    setDescription("");
+    setPosterURL("");
+    setRating("");
+  };
+
+  const filteredMovies = movies.filter((movie) => {
+    const matchesTitle = movie.title
+      .toLowerCase()
+      .includes(searchTitle.toLowerCase());
+
+    const matchesRating =
+      searchRating === "" || movie.rating >= Number(searchRating);
+
+    return matchesTitle && matchesRating;
+  });
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Home
+              movies={filteredMovies}
+              searchTitle={searchTitle}
+              setSearchTitle={setSearchTitle}
+              searchRating={searchRating}
+              setSearchRating={setSearchRating}
+              title={title}
+              setTitle={setTitle}
+              description={description}
+              setDescription={setDescription}
+              posterURL={posterURL}
+              setPosterURL={setPosterURL}
+              rating={rating}
+              setRating={setRating}
+              addMovie={addMovie}
+            />
+          }
+        />
+
+        <Route path="/movie/:title" element={<MovieDetails />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
